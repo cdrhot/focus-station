@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-serif: "Lora", serif;
+
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-on-surface: var(--on-surface);
+  --color-on-background: var(--on-background);
+}
+
+:root {
+  --theme-transition: 300ms;
+
+  --background: #061326;
+  --surface: rgba(13, 33, 58, 0.72);
+  --primary: #68b7ff;
+  --accent: #77e4d4;
+  --on-background: #d5e6ff;
+  --on-surface: #e6f0ff;
+  --ring-track: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme="night-blue"] {
+  --background: #061326;
+  --surface: rgba(13, 33, 58, 0.72);
+  --primary: #68b7ff;
+  --accent: #77e4d4;
+  --on-background: #d5e6ff;
+  --on-surface: #e6f0ff;
+  --ring-track: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme="graphite"] {
+  --background: #1a1c20;
+  --surface: rgba(44, 48, 56, 0.72);
+  --primary: #b5becd;
+  --accent: #8fb4ff;
+  --on-background: #eef1f6;
+  --on-surface: #f4f6fb;
+  --ring-track: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="solar"] {
+  --background: #2c1300;
+  --surface: rgba(74, 39, 12, 0.7);
+  --primary: #ffb266;
+  --accent: #ffd84d;
+  --on-background: #ffe8d2;
+  --on-surface: #fff1dd;
+  --ring-track: rgba(255, 240, 210, 0.16);
+  --glass-border: rgba(255, 224, 180, 0.18);
+}
+
+[data-theme="arctic"] {
+  --background: #eaf5ff;
+  --surface: rgba(255, 255, 255, 0.78);
+  --primary: #0b6ea8;
+  --accent: #00a4c8;
+  --on-background: #0e2534;
+  --on-surface: #163549;
+  --ring-track: rgba(15, 50, 76, 0.14);
+  --glass-border: rgba(0, 70, 110, 0.16);
+}
+
+body {
+  @apply bg-background text-on-background font-sans;
+  background: radial-gradient(circle at center, var(--surface) 0%, var(--background) 100%);
+  min-height: 100vh;
+  transition:
+    background-color var(--theme-transition) ease,
+    color var(--theme-transition) ease,
+    border-color var(--theme-transition) ease,
+    fill var(--theme-transition) ease,
+    stroke var(--theme-transition) ease;
+}
+
+.glass {
+  @apply backdrop-blur-xl border;
+  background: var(--surface);
+  border-color: var(--glass-border);
+  transition:
+    background-color var(--theme-transition) ease,
+    border-color var(--theme-transition) ease,
+    color var(--theme-transition) ease;
+}
+
+.timer-text {
+  font-variant-numeric: tabular-nums;
+}
+
+button,
+svg circle,
+span,
+div {
+  transition:
+    background-color var(--theme-transition) ease,
+    color var(--theme-transition) ease,
+    border-color var(--theme-transition) ease,
+    fill var(--theme-transition) ease,
+    stroke var(--theme-transition) ease;
+}
+
+.equalizer-bar {
+  width: 3px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+.equalizer-bar.playing {
+  animation: equalize 750ms ease-in-out infinite;
+  opacity: 0.95;
+}
+
+@keyframes equalize {
+  0% {
+    transform: scaleY(0.45);
+  }
+  25% {
+    transform: scaleY(1.35);
+  }
+  50% {
+    transform: scaleY(0.7);
+  }
+  75% {
+    transform: scaleY(1.15);
+  }
+  100% {
+    transform: scaleY(0.5);
+  }
+}

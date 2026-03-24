@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1bd60f8c-a487-43fb-be74-83c6801cb9ce",
+    "title": "New Note",
+    "content": "Capture your focus point for this session.",
+    "type": "thought",
+    "x": 369,
+    "y": 371,
+    "createdAt": "2026-03-24T20:46:12.726Z",
+    "updatedAt": "2026-03-24T20:46:12.726Z"
+  },
+  {
+    "id": "7dc751e6-86cb-4f66-ac00-f61c5197e368",
+    "title": "New Note",
+    "content": "Capture your focus point for this session.",
+    "type": "thought",
+    "x": 170,
+    "y": 345,
+    "createdAt": "2026-03-24T20:46:24.207Z",
+    "updatedAt": "2026-03-24T20:46:24.207Z"
+  },
+  {
+    "id": "732bef23-7241-49d2-9168-c856a60fe61a",
+    "title": "New Note",
+    "content": "Capture your focus point for this session.",
+    "type": "thought",
+    "x": 343,
+    "y": 344,
+    "createdAt": "2026-03-24T20:46:25.378Z",
+    "updatedAt": "2026-03-24T20:46:25.378Z"
+  },
+  {
+    "id": "80c9a559-cfcd-4833-aec3-238b17825483",
+    "title": "New Note",
+    "content": "pnfiopn",
+    "type": "thought",
+    "x": 399.5999755859375,
+    "y": 37.399993896484375,
+    "createdAt": "2026-03-24T20:46:28.064Z",
+    "updatedAt": "2026-03-24T20:46:35.938Z"
+  },
+  {
+    "id": "443a1c13-284e-4896-8c91-fa2c73045a48",
+    "title": "New Note",
+    "content": "Capture your focus point for this session.",
+    "type": "thought",
+    "x": 320,
+    "y": 375,
+    "createdAt": "2026-03-24T20:46:37.462Z",
+    "updatedAt": "2026-03-24T20:46:37.462Z"
+  },
+  {
+    "id": "88180386-85e7-4d34-a3c3-d475724ed4d4",
+    "title": "New Note",
+    "content": "ovnosnvofsnvo",
+    "type": "thought",
+    "x": 496,
+    "y": -143.79998779296875,
+    "createdAt": "2026-03-24T20:46:39.561Z",
+    "updatedAt": "2026-03-24T20:46:48.850Z"
+  }
+]
