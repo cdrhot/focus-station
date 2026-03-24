@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Edit2, Trash2, GripVertical, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { API_ENDPOINTS } from '../api/config';
+import { API_ENDPOINTS, IS_SERVERLESS } from '../api/config';
 import { markOffline, markSynced, markSyncing } from '../state/syncStatus';
 
 interface NoteProps {
@@ -56,6 +56,11 @@ export const DraggableNote: React.FC<NoteProps> = ({
     setDisplayContent(normalized);
     setIsEditing(false);
 
+    if (IS_SERVERLESS) {
+      markSynced();
+      return;
+    }
+
     try {
       const response = await fetch(API_ENDPOINTS.noteById(id), {
         method: 'PATCH',
@@ -97,6 +102,13 @@ export const DraggableNote: React.FC<NoteProps> = ({
   const syncPositionToBackend = async (nextX: number, nextY: number) => {
     setIsSavingPosition(true);
     markSyncing();
+
+    if (IS_SERVERLESS) {
+      savePositionLocally(id, nextX, nextY);
+      markSynced();
+      setIsSavingPosition(false);
+      return;
+    }
 
     try {
       const response = await fetch(API_ENDPOINTS.noteById(id), {

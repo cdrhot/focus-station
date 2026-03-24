@@ -1,5 +1,4 @@
-import { API_ENDPOINTS } from './config';
-import { markOffline, markSynced, markSyncing } from '../state/syncStatus';
+import { markSynced, markSyncing } from '../state/syncStatus';
 
 export type Theme = 'night-blue' | 'graphite' | 'solar' | 'arctic';
 
@@ -61,22 +60,10 @@ function writeLocalFallback(settings: Partial<AppSettings>) {
 
 export async function getSettingsWithFallback(): Promise<AppSettings> {
   markSyncing();
-
-  try {
-    const response = await fetch(API_ENDPOINTS.settings);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch settings (${response.status})`);
-    }
-
-    const remote = normalizeSettings((await response.json()) as Partial<AppSettings>);
-    writeLocalFallback(remote);
-    markSynced();
-    return remote;
-  } catch (error) {
-    console.error('Settings GET failed, using local fallback:', error);
-    markOffline();
-    return readLocalFallback();
-  }
+  const local = readLocalFallback();
+  writeLocalFallback(local);
+  markSynced();
+  return local;
 }
 
 export async function saveSettingsWithFallback(settings: Partial<AppSettings>): Promise<AppSettings> {
@@ -84,28 +71,8 @@ export async function saveSettingsWithFallback(settings: Partial<AppSettings>): 
   writeLocalFallback(optimistic);
   markSyncing();
 
-  try {
-    const response = await fetch(API_ENDPOINTS.settings, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(settings),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to save settings (${response.status})`);
-    }
-
-    const remote = normalizeSettings((await response.json()) as Partial<AppSettings>);
-    writeLocalFallback(remote);
-    markSynced();
-    return remote;
-  } catch (error) {
-    console.error('Settings POST failed, using local fallback:', error);
-    markOffline();
-    return optimistic;
-  }
+  markSynced();
+  return optimistic;
 }
 
 export function getDefaultAppSettings(): AppSettings {

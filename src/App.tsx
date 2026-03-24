@@ -10,7 +10,7 @@ import { DraggableNote } from './components/DraggableNote';
 import { Player } from './components/Player';
 import { Taskbar, type TaskItem } from './components/Taskbar';
 import { Plus, Trash2 } from 'lucide-react';
-import { API_ENDPOINTS } from './api/config';
+import { API_ENDPOINTS, IS_SERVERLESS } from './api/config';
 
 interface Note {
   id: string;
@@ -21,6 +21,26 @@ interface Note {
   y: number;
   createdAt: string;
   updatedAt: string;
+}
+
+const TASKS_STORAGE_KEY = 'tasks';
+
+function readStoredTasks(): TaskItem[] {
+  const raw = localStorage.getItem(TASKS_STORAGE_KEY);
+  if (!raw) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as TaskItem[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeStoredTasks(tasks: TaskItem[]) {
+  localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
 }
 
 function sameNotes(a: Note[], b: Note[]): boolean {
@@ -71,6 +91,10 @@ export default function App() {
   const [offlineNotice, setOfflineNotice] = useState('');
 
   const fetchNotes = useCallback(async () => {
+    if (IS_SERVERLESS) {
+      return;
+    }
+
     try {
       const response = await fetch(API_ENDPOINTS.notes);
       if (!response.ok) {
@@ -85,6 +109,12 @@ export default function App() {
   }, []);
 
   const fetchTasks = useCallback(async () => {
+    if (IS_SERVERLESS) {
+      const localTasks = readStoredTasks();
+      setTasks((current) => (sameTasks(current, localTasks) ? current : localTasks));
+      return;
+    }
+
     try {
       const response = await fetch(API_ENDPOINTS.tasks);
       if (!response.ok) {
@@ -133,6 +163,11 @@ export default function App() {
 
     setNotes((currentNotes) => [...currentNotes, optimisticNote]);
 
+    if (IS_SERVERLESS) {
+      setIsCreating(false);
+      return;
+    }
+
     try {
       const response = await fetch(API_ENDPOINTS.notes, {
         method: 'POST',
@@ -166,6 +201,15 @@ export default function App() {
       completed: false,
     };
 
+    if (IS_SERVERLESS) {
+      setTasks((current) => {
+        const next = [...current, optimisticTask];
+        writeStoredTasks(next);
+        return next;
+      });
+      return;
+    }
+
     setTasks((current) => [...current, optimisticTask]);
 
     try {
@@ -197,7 +241,13 @@ export default function App() {
     }
 
     const nextCompleted = !currentTask.completed;
-    setTasks((current) => current.map((task) => (task.id === id ? { ...task, completed: nextCompleted } : task)));
+    const nextTasks = tasks.map((task) => (task.id === id ? { ...task, completed: nextCompleted } : task));
+    setTasks(nextTasks);
+
+    if (IS_SERVERLESS) {
+      writeStoredTasks(nextTasks);
+      return;
+    }
 
     try {
       const response = await fetch(API_ENDPOINTS.taskById(id), {
@@ -219,7 +269,13 @@ export default function App() {
 
   const handleDeleteTask = useCallback(async (id: string) => {
     const previous = tasks;
-    setTasks((current) => current.filter((task) => task.id !== id));
+    const nextTasks = tasks.filter((task) => task.id !== id);
+    setTasks(nextTasks);
+
+    if (IS_SERVERLESS) {
+      writeStoredTasks(nextTasks);
+      return;
+    }
 
     try {
       const response = await fetch(API_ENDPOINTS.taskById(id), {
